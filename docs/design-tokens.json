@@ -1,0 +1,96 @@
+{
+  "version": "1.0.0",
+  "theme": {
+    "color": {
+      "light": {
+        "primary": "#44A194",
+        "on-primary": "#FFFFFF",
+        "primary-container": "#76D3C6",
+        "on-primary-container": "#007265",
+        "secondary": "#334155",
+        "on-secondary": "#FFFFFF",
+        "secondary-container": "#CBD5E1",
+        "on-secondary-container": "#666666",
+        "tertiary": "#76D3C6",
+        "on-tertiary": "#000000",
+        "tertiary-container": "#E0F2F1",
+        "on-tertiary-container": "#007265",
+        "background": "#FFFFFF",
+        "on-background": "#111111",
+        "surface": "#F8F9FA",
+        "on-surface": "#111111",
+        "surface-variant": "#1E293B",
+        "on-surface-variant": "#666666",
+        "outline": "#E2E8F0",
+        "on-outline": "#94A3B8",
+        "error": "#EF4444",
+        "on-error": "#FFFFFF",
+        "success": "#22C55E",
+        "warning": "#F59E0B"
+      },
+      "dark": {
+        "primary": "#44A194",
+        "on-primary": "#FFFFFF",
+        "primary-container": "#007265",
+        "on-primary-container": "#E0F2F1",
+        "secondary": "#666666",
+        "on-secondary": "#FFFFFF",
+        "secondary-container": "#334155",
+        "on-secondary-container": "#CBD5E1",
+        "tertiary": "#76D3C6",
+        "on-tertiary": "#000000",
+        "tertiary-container": "#E0F2F1",
+        "on-tertiary-container": "#007265",
+        "background": "#000000",
+        "on-background": "#FFFFFF",
+        "surface": "#121212",
+        "on-surface": "#FFFFFF",
+        "surface-variant": "#1E293B",
+        "on-surface-variant": "#BBBBBB",
+        "outline": "#334155",
+        "on-outline": "#94A3B8",
+        "error": "#EF4444",
+        "on-error": "#FFFFFF",
+        "success": "#22C55E",
+        "warning": "#F59E0B"
+      }
+    },
+    "typography": {
+      "family": {
+        "primary": "Poppins"
+      },
+      "scale": {
+        "headline-large": 32,
+        "headline-medium": 28,
+        "headline-small": 24,
+        "title-large": 22,
+        "title-medium": 16,
+        "title-small": 14,
+        "body-large": 16,
+        "body-medium": 14,
+        "body-small": 12,
+        "label-large": 14,
+        "label-medium": 12,
+        "label-small": 11
+      }
+    },
+    "radius": {
+      "sm": 8,
+      "md": 12,
+      "lg": 16,
+      "xl": 20
+    },
+    "spacing": {
+      "xs": 4,
+      "sm": 8,
+      "md": 16,
+      "lg": 24,
+      "xl": 32
+    },
+    "elevation": {
+      "sm": "0 2px 8px rgba(0,0,0,0.06)",
+      "md": "0 8px 24px rgba(0,0,0,0.08)",
+      "lg": "0 12px 36px rgba(0,0,0,0.12)"
+    }
+  }
+}

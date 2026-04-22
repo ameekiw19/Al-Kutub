@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AJAX Kitab Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        .upload-area.dragover {
+            border-color: #0d6efd;
+            background-color: #e7f3ff;
+        }
+        .file-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .real-time-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 350px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        .status-indicator.success {
+            background-color: #28a745;
+        }
+        .status-indicator.error {
+            background-color: #dc3545;
+        }
+        .status-indicator.processing {
+            background-color: #ffc107;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">
+                        <i class="bi bi-book-plus me-2"></i>
+                        Test AJAX Kitab Form
+                    </h2>
+                    <button class="btn btn-outline-primary" onclick="loadStats()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        Refresh Stats
+                    </button>
+                </div>
+
+                <!-- Real-time Stats -->
+                <div id="statsContainer" class="stats-card">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h3 id="totalKitabs" class="mb-1">-</h3>
+                            <small>Total Kitab</small>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 id="totalNotifications" class="mb-1">-</h3>
+                            <small>Total Notifikasi</small>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 id="recentUploads" class="mb-1">-</h3>
+                            <small>Upload Hari Ini</small>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 id="systemStatus" class="mb-1">
+                                <span class="status-indicator success"></span>
+                                Online
+                            </h3>
+                            <small>Status Sistem</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Form -->
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="kitabForm" enctype="multipart/form-data">
+                            <div class="row">
+                                <!-- Left Column: Files -->
+                                <div class="col-lg-4">
+                                    <h6 class="fw-bold text-dark mb-3 small text-uppercase">Upload Files</h6>
+                                    
+                                    <!-- PDF Upload -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold text-muted small">FILE PDF</label>
+                                        <div class="upload-area" id="pdfUploadArea">
+                                            <i class="bi bi-file-earmark-pdf fs-1 text-danger mb-2"></i>
+                                            <p class="mb-1">Drag & drop PDF file atau klik untuk browse</p>
+                                            <small class="text-muted">Maksimal 10MB</small>
+                                            <input type="file" name="file_pdf" id="file_pdf" class="d-none" accept="application/pdf" required>
+                                        </div>
+                                        <div id="pdfPreview" class="file-preview" style="display: none;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+                                                    <span id="pdfFileName"></span>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile('pdf')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cover Upload -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold text-muted small">COVER IMAGE</label>
+                                        <div class="upload-area" id="coverUploadArea">
+                                            <i class="bi bi-image fs-1 text-primary mb-2"></i>
+                                            <p class="mb-1">Drag & drop cover image atau klik untuk browse</p>
+                                            <small class="text-muted">JPG/PNG, Maksimal 2MB</small>
+                                            <input type="file" name="cover" id="cover" class="d-none" accept="image/*" required>
+                                        </div>
+                                        <div id="coverPreview" class="file-preview" style="display: none;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <i class="bi bi-image text-primary me-2"></i>
+                                                    <span id="coverFileName"></span>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile('cover')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right Column: Metadata -->
+                                <div class="col-lg-8">
+                                    <h6 class="fw-bold text-dark mb-3 small text-uppercase">Informasi Detail</h6>
+
+                                    <!-- Title -->
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="judul" name="judul" placeholder="Judul kitab" required>
+                                        <label for="judul">Judul Kitab</label>
+                                    </div>
+
+                                    <!-- Author & Language -->
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-7">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control" id="penulis" name="penulis" placeholder="Penulis" required>
+                                                <label for="penulis">Penulis / Pengarang</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-floating">
+                                                <select class="form-select" id="bahasa" name="bahasa" required>
+                                                    <option value="">Pilih Bahasa</option>
+                                                    <option value="indonesia">Bahasa Indonesia</option>
+                                                    <option value="arab">Bahasa Arab</option>
+                                                    <option value="inggris">Bahasa Inggris</option>
+                                                </select>
+                                                <label for="bahasa">Bahasa</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Category -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold text-muted small">KATEGORI</label>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <input type="radio" class="btn-check" name="kategori" id="cat-aqidah" value="aqidah" required>
+                                            <label class="btn btn-outline-primary rounded-pill px-3 py-1 small fw-bold" for="cat-aqidah">Aqidah</label>
+                                            
+                                            <input type="radio" class="btn-check" name="kategori" id="cat-fiqih" value="fiqih" required>
+                                            <label class="btn btn-outline-primary rounded-pill px-3 py-1 small fw-bold" for="cat-fiqih">Fiqih</label>
+                                            
+                                            <input type="radio" class="btn-check" name="kategori" id="cat-hadis" value="hadis" required>
+                                            <label class="btn btn-outline-primary rounded-pill px-3 py-1 small fw-bold" for="cat-hadis">Hadis</label>
+                                            
+                                            <input type="radio" class="btn-check" name="kategori" id="cat-tafsir" value="tafsir" required>
+                                            <label class="btn btn-outline-primary rounded-pill px-3 py-1 small fw-bold" for="cat-tafsir">Tafsir</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div class="form-floating mb-4">
+                                        <textarea class="form-control" id="deskripsi" name="deskripsi" placeholder="Deskripsi kitab" style="height: 120px" required></textarea>
+                                        <label for="deskripsi">Deskripsi Kitab</label>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                            <span class="btn-text">
+                                                <i class="bi bi-cloud-upload me-2"></i>
+                                                Simpan Kitab (AJAX)
+                                            </span>
+                                            <span class="btn-loading" style="display: none;">
+                                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                                Sedang menyimpan...
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Status Notifications -->
+    <div id="statusContainer" class="real-time-status"></div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 class="mb-2">Kitab Berhasil Ditambahkan!</h4>
+                    <p class="text-muted mb-3" id="successMessage"></p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-primary" onclick="resetForm()">Tambah Lagi</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let isSubmitting = false;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUploadAreas();
+            initializeForm();
+            loadStats();
+            startRealTimeUpdates();
+        });
+
+        // Initialize upload areas
+        function initializeUploadAreas() {
+            // PDF Upload Area
+            const pdfArea = document.getElementById('pdfUploadArea');
+            const pdfInput = document.getElementById('file_pdf');
+            
+            pdfArea.addEventListener('click', () => pdfInput.click());
+            pdfArea.addEventListener('dragover', handleDragOver);
+            pdfArea.addEventListener('dragleave', handleDragLeave);
+            pdfArea.addEventListener('drop', (e) => handleDrop(e, 'pdf'));
+            pdfInput.addEventListener('change', (e) => handleFileSelect(e, 'pdf'));
+
+            // Cover Upload Area
+            const coverArea = document.getElementById('coverUploadArea');
+            const coverInput = document.getElementById('cover');
+            
+            coverArea.addEventListener('click', () => coverInput.click());
+            coverArea.addEventListener('dragover', handleDragOver);
+            coverArea.addEventListener('dragleave', handleDragLeave);
+            coverArea.addEventListener('drop', (e) => handleDrop(e, 'cover'));
+            coverInput.addEventListener('change', (e) => handleFileSelect(e, 'cover'));
+        }
+
+        // Drag & drop handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e, type) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const input = document.getElementById(type === 'pdf' ? 'file_pdf' : 'cover');
+                input.files = files;
+                handleFileSelect({ target: input }, type);
+            }
+        }
+
+        // File selection handler
+        function handleFileSelect(e, type) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const preview = document.getElementById(type + 'Preview');
+            const fileName = document.getElementById(type + 'FileName');
+            const uploadArea = document.getElementById(type + 'UploadArea');
+
+            // Show preview
+            fileName.textContent = file.name + ' (' + formatFileSize(file.size) + ')';
+            preview.style.display = 'block';
+            uploadArea.style.display = 'none';
+
+            showStatus('success', `File ${file.name} berhasil dipilih`);
+        }
+
+        // Remove file
+        function removeFile(type) {
+            const preview = document.getElementById(type + 'Preview');
+            const uploadArea = document.getElementById(type + 'UploadArea');
+            const input = document.getElementById(type === 'pdf' ? 'file_pdf' : 'cover');
+
+            input.value = '';
+            preview.style.display = 'none';
+            uploadArea.style.display = 'block';
+        }
+
+        // Initialize form
+        function initializeForm() {
+            const form = document.getElementById('kitabForm');
+            form.addEventListener('submit', handleFormSubmit);
+        }
+
+        // Handle form submission
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            if (isSubmitting) return;
+            
+            isSubmitting = true;
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+
+            // Validate form
+            if (!validateForm()) {
+                isSubmitting = false;
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+
+            showStatus('processing', 'Sedang mengupload kitab...');
+
+            try {
+                const formData = new FormData(e.target);
+                
+                console.log('Submitting form with data:', Object.fromEntries(formData));
+                
+                const response = await fetch('/api/admin/kitab/store', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+
+                if (result.success) {
+                    showStatus('success', result.message);
+                    showSuccessModal(result);
+                    loadStats(); // Refresh stats
+                } else {
+                    showStatus('error', result.message || 'Gagal menambahkan kitab');
+                    if (result.errors) {
+                        showValidationErrors(result.errors);
+                    }
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                showStatus('error', 'Terjadi kesalahan saat mengupload kitab: ' + error.message);
+            } finally {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+            }
+        }
+
+        // Validate form
+        function validateForm() {
+            const form = document.getElementById('kitabForm');
+            const formData = new FormData(form);
+            
+            // Check required fields
+            const required = ['judul', 'penulis', 'deskripsi', 'kategori', 'bahasa'];
+            for (const field of required) {
+                if (!formData.get(field)) {
+                    showStatus('error', `Field ${field} harus diisi`);
+                    return false;
+                }
+            }
+
+            // Check files
+            if (!formData.get('file_pdf') || !formData.get('cover')) {
+                showStatus('error', 'File PDF dan Cover harus diupload');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Show validation errors
+        function showValidationErrors(errors) {
+            for (const [field, messages] of Object.entries(errors)) {
+                for (const message of messages) {
+                    showStatus('error', message);
+                }
+            }
+        }
+
+        // Show success modal
+        function showSuccessModal(result) {
+            const modal = new bootstrap.Modal(document.getElementById('successModal'));
+            const message = document.getElementById('successMessage');
+            
+            message.textContent = `${result.kitab.judul} oleh ${result.kitab.penulis} telah berhasil ditambahkan ke database.`;
+            modal.show();
+        }
+
+        // Reset form
+        function resetForm() {
+            const form = document.getElementById('kitabForm');
+            form.reset();
+            
+            // Reset file previews
+            removeFile('pdf');
+            removeFile('cover');
+            
+            // Hide modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
+            modal.hide();
+            
+            showStatus('success', 'Form telah direset, siap untuk input baru');
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/admin/kitab/stats');
+                const result = await response.json();
+                
+                if (result.success) {
+                    updateStatsDisplay(result.stats);
+                }
+            } catch (error) {
+                console.error('Stats error:', error);
+            }
+        }
+
+        // Update stats display
+        function updateStatsDisplay(stats) {
+            document.getElementById('totalKitabs').textContent = stats.total_kitabs || 0;
+            document.getElementById('totalNotifications').textContent = stats.total_notifications || 0;
+            
+            // Count today's uploads
+            const today = new Date().toDateString();
+            const todayUploads = stats.recent_kitabs?.filter(kitab => 
+                new Date(kitab.created_at).toDateString() === today
+            ).length || 0;
+            document.getElementById('recentUploads').textContent = todayUploads;
+        }
+
+        // Start real-time updates
+        function startRealTimeUpdates() {
+            // Update stats every 30 seconds
+            setInterval(loadStats, 30000);
+        }
+
+        // Show status notification
+        function showStatus(type, message) {
+            const container = document.getElementById('statusContainer');
+            const id = 'status-' + Date.now();
+            
+            const alertClass = type === 'success' ? 'alert-success' : 
+                             type === 'error' ? 'alert-danger' : 'alert-warning';
+            
+            const indicatorClass = type === 'success' ? 'success' : 
+                                 type === 'error' ? 'error' : 'processing';
+            
+            const statusHtml = `
+                <div id="${id}" class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <span class="status-indicator ${indicatorClass}"></span>
+                    <strong>${type === 'success' ? 'Success' : type === 'error' ? 'Error' : 'Processing'}:</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', statusHtml);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.remove();
+                }
+            }, 5000);
+        }
+
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>

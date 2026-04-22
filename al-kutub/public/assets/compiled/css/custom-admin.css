@@ -1,0 +1,48 @@
+/* Custom Admin CSS Override */
+:root {
+    --bs-primary: #44A194;
+    --bs-primary-rgb: 68, 161, 148;
+}
+
+.sidebar-wrapper {
+    background-color: #FFFFFF;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-wrapper .menu .sidebar-item.active>.sidebar-link {
+    background-color: #44A194;
+}
+
+.sidebar-wrapper .menu .sidebar-item.active>.sidebar-link span {
+    color: #fff;
+}
+
+.sidebar-wrapper .menu .sidebar-item.active>.sidebar-link i {
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #44A194;
+    border-color: #44A194;
+}
+
+.btn-primary:hover {
+    background-color: #3b8c80;
+    border-color: #3b8c80;
+}
+
+/* Dark Mode Overrides */
+[data-bs-theme=dark] .sidebar-wrapper {
+    background-color: #121212;
+    /* Surface Dark */
+}
+
+[data-bs-theme=dark] body {
+    background-color: #000000;
+    /* Background Dark */
+}
+
+[data-bs-theme=dark] .card {
+    background-color: #121212;
+    border-color: #333;
+}

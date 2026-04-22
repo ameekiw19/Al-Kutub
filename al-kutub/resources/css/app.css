@@ -1,0 +1,268 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* Light Mode Colors - Match Android SharedColors */
+        --background: 0 0% 100%;           /* #FFFFFF (White) */
+        --foreground: 240 10% 11%;         /* #111111 (Slate900) */
+        --card: 0 0% 100%;                 /* #FFFFFF */
+        --card-foreground: 240 10% 11%;    /* #111111 */
+        --popover: 0 0% 100%;              /* #FFFFFF */
+        --popover-foreground: 240 10% 11%; /* #111111 */
+        
+        /* Primary - TealMain #44A194 */
+        --primary: 174 40% 46%;
+        --primary-foreground: 0 0% 100%;
+        
+        /* Secondary - Slate colors */
+        --secondary: 210 40% 96.1%;        /* #F1F5F9 (Slate100) */
+        --secondary-foreground: 240 10% 11%;
+        
+        /* Muted */
+        --muted: 210 40% 96.1%;            /* #F1F5F9 */
+        --muted-foreground: 215.4 16.3% 46.9%; /* #64748B */
+        
+        /* Accent - TealLight #76D3C6 */
+        --accent: 174 40% 56%;
+        --accent-foreground: 240 10% 11%;
+        
+        /* Destructive - ErrorRed #EF4444 */
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
+        
+        /* Borders and Inputs - Slate200 #E2E8F0 */
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 174 40% 46%;               /* Primary color */
+        
+        /* Border Radius */
+        --radius: 0.5rem;                  /* 8px */
+
+        /* Al-Kutub custom colors */
+        --kutub-primary: 174 40% 46%;      /* #44A194 */
+        --kutub-secondary: 174 30% 36%;    /* #2D7A6E */
+        --kutub-accent: 174 40% 56%;       /* #5FB8A9 */
+        --kutub-light: 174 40% 94%;        /* #E8F5F3 */
+        --kutub-dark: 174 40% 20%;         /* #1A4D42 */
+    }
+
+    .dark {
+        /* Dark Mode Colors - Match Android Dark Theme */
+        --background: 0 0% 0%;             /* #000000 (Black) */
+        --foreground: 0 0% 100%;           /* #FFFFFF (White) */
+        --card: 0 0% 12%;                  /* #1E1E1E (Dark Surface) */
+        --card-foreground: 0 0% 100%;      /* #FFFFFF */
+        
+        --popover: 0 0% 12%;               /* #1E1E1E */
+        --popover-foreground: 0 0% 100%;   /* #FFFFFF */
+        
+        /* Primary stays same in dark mode */
+        --primary: 174 40% 46%;            /* #44A194 */
+        --primary-foreground: 0 0% 100%;
+        
+        /* Secondary - Darker slate */
+        --secondary: 217.2 32.6% 17.5%;    /* #1E293B (Slate800) */
+        --secondary-foreground: 0 0% 100%;
+        
+        /* Muted - Dark mode muted */
+        --muted: 217.2 32.6% 17.5%;        /* #1E293B */
+        --muted-foreground: 215 20.2% 65.1%; /* #94A3B8 */
+        
+        /* Accent stays same */
+        --accent: 174 40% 56%;             /* #5FB8A9 */
+        --accent-foreground: 0 0% 100%;
+        
+        /* Destructive in dark mode */
+        --destructive: 0 62.8% 30.6%;      /* Darker red */
+        --destructive-foreground: 0 0% 100%;
+        
+        /* Borders and Inputs - Darker */
+        --border: 217.2 32.6% 17.5%;       /* #1E293B */
+        --input: 217.2 32.6% 17.5%;        /* #1E293B */
+        --ring: 174 40% 46%;               /* Primary color */
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-family: 'Poppins', sans-serif;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+    
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+    }
+    
+    /* Body text */
+    p, span, div {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Buttons and inputs */
+    button, input, select, textarea {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Custom scrollbar - Match Android */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-muted;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-muted-foreground/30 rounded-full;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-muted-foreground/50;
+    }
+}
+
+@layer components {
+    /* Button Variants - Match Android Material 3 */
+    .btn {
+        @apply inline-flex items-center justify-center;
+        @apply rounded-full;
+        @apply font-medium text-sm;
+        @apply transition-colors duration-200;
+        @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    }
+    
+    .btn-primary {
+        @apply btn;
+        @apply bg-primary text-primary-foreground;
+        @apply h-10 px-4 py-2;
+        @apply hover:bg-primary/90;
+    }
+    
+    .btn-secondary {
+        @apply btn;
+        @apply bg-secondary text-secondary-foreground;
+        @apply h-10 px-4 py-2;
+        @apply hover:bg-secondary/80;
+    }
+    
+    .btn-outline {
+        @apply btn;
+        @apply border border-input bg-transparent;
+        @apply h-10 px-4 py-2;
+        @apply hover:bg-accent hover:text-accent-foreground;
+    }
+    
+    .btn-ghost {
+        @apply btn;
+        @apply bg-transparent;
+        @apply h-10 px-4 py-2;
+        @apply hover:bg-accent hover:text-accent-foreground;
+    }
+    
+    .btn-destructive {
+        @apply btn;
+        @apply bg-destructive text-destructive-foreground;
+        @apply h-10 px-4 py-2;
+        @apply hover:bg-destructive/90;
+    }
+    
+    /* Card - Match Android Material 3 Cards */
+    .card {
+        @apply bg-card text-card-foreground;
+        @apply rounded-xl;
+        @apply border;
+        @apply shadow-sm;
+        @apply p-6;
+    }
+    
+    /* Input - Match Android Text Fields */
+    .input {
+        @apply w-full;
+        @apply h-14 px-4;
+        @apply rounded-lg;
+        @apply border border-input;
+        @apply bg-background;
+        @apply text-sm;
+        @apply placeholder:text-muted-foreground;
+        @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+        @apply disabled:cursor-not-allowed disabled:opacity-50;
+    }
+    
+    /* Badge - Match Android Chips */
+    .badge {
+        @apply inline-flex items-center justify-center;
+        @apply rounded-md;
+        @apply border;
+        @apply px-2 py-0.5;
+        @apply text-xs font-medium;
+        @apply whitespace-nowrap;
+    }
+    
+    .badge-primary {
+        @apply badge;
+        @apply bg-primary text-primary-foreground border-transparent;
+    }
+    
+    .badge-secondary {
+        @apply badge;
+        @apply bg-secondary text-secondary-foreground border-transparent;
+    }
+    
+    .badge-outline {
+        @apply badge;
+        @apply bg-transparent border-border;
+    }
+    
+    .badge-success {
+        @apply badge;
+        @apply bg-success text-white border-transparent;
+    }
+    
+    .badge-warning {
+        @apply badge;
+        @apply bg-warning text-white border-transparent;
+    }
+    
+    .badge-error {
+        @apply badge;
+        @apply bg-error text-white border-transparent;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    /* Smooth scrolling */
+    .scroll-smooth {
+        scroll-behavior: smooth;
+    }
+
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Alpine.js [x-cloak] utility */
+[x-cloak] {
+    display: none !important;
+}

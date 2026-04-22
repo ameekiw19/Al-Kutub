@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "79836603929",
+    "project_id": "al-kutub-650c7",
+    "storage_bucket": "al-kutub-650c7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79836603929:android:ebc4edfb359d52004cec88",
+        "android_client_info": {
+          "package_name": "com.example.al_kutub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVTiEPWnW3q0D2OA7MPW93HRi41u3lQkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

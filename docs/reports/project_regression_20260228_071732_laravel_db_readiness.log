@@ -1,0 +1,41 @@
+[readiness] Laravel version
+[readiness][PASS] Laravel artisan dapat dijalankan
+[readiness] PHP extension check
+[readiness][PASS] pdo_mysql tersedia
+[readiness] Lint critical backend files
+[readiness][PASS] ApiAuth.php valid
+[readiness][PASS] ApiPageBookmarkController.php valid
+[readiness][PASS] routes/api.php valid
+[readiness] Lint all migration files
+[readiness][PASS] Semua migration file lulus PHP lint
+[readiness] Route checks
+[readiness][PASS] Route v1 refresh-token terdaftar
+[readiness][PASS] Route legacy refresh-token terdaftar
+[readiness][PASS] Route page-bookmarks (GET/POST/DELETE) terdaftar
+[readiness] DB connectivity + migration status
+[readiness][WARN] DB belum bisa diakses (migrate:status gagal)
+[readiness][WARN] Current env DB => host=127.0.0.1 port=3306 database=project
+[readiness][WARN] Pastikan service MySQL/MariaDB aktif dan kredensial .env valid
+--- migrate:status error ---
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000] [2002] Connection refused (SQL: select * from information_schema.tables where table_schema = project and table_name = migrations and table_type = 'BASE TABLE')
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:712
+    708▕         // If an exception occurs when attempting to run a query, we'll format the error
+    709▕         // message to include the bindings with SQL, which will make this exception a
+    710▕         // lot more helpful to the developer instead of just the database's errors.
+    711▕         catch (Exception $e) {
+  ➜ 712▕             throw new QueryException(
+    713▕                 $query, $this->prepareBindings($bindings), $e
+    714▕             );
+    715▕         }
+    716▕     }
+
+      [2m+35 vendor frames [22m
+  36  artisan:35
+      Illuminate\Foundation\Console\Kernel::handle()
+----------------------------
+
+[readiness] Summary: PASS=9 WARN=3 FAIL=0

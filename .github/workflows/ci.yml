@@ -1,0 +1,62 @@
+name: Al-Kutub CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: al-kutub-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: al-kutub
+    steps:
+      - uses: actions/checkout@v4
+      - name: Design consistency guardrail
+        run: bash ../scripts/check-design-consistency.sh
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+      - name: Prepare env
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+      - name: API contract lock
+        run: bash ../scripts/check-openapi-contract.sh
+      - name: Run Laravel tests
+        run: php artisan test
+
+  android-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AlKutub
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Compile Kotlin debug
+        run: ./gradlew :app:compileDebugKotlin --no-daemon
+      - name: Run unit tests
+        run: ./gradlew :app:testDebugUnitTest --no-daemon
+
+  quality-gate:
+    runs-on: ubuntu-latest
+    needs:
+      - laravel-tests
+      - android-checks
+    steps:
+      - name: Quality gate passed
+        run: echo "All required checks passed."

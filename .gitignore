@@ -1,0 +1,22 @@
+# Root .gitignore for Al-Kutub Projects
+
+# IDEs and Editors
+.idea/
+.vscode/
+.cursor/
+.history/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project-specific ignores are handled by subdirectories
+# al-kutub/.gitignore
+# AlKutub/.gitignore
+
+# Temporary or hidden tool folders
+.zencoder/
+.zenflow/
+.codex/
+tmp/

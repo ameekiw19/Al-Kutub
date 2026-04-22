@@ -1,0 +1,401 @@
+openapi: 3.0.3
+info:
+  title: Al-Kutub API
+  version: 1.2.0
+servers:
+  - url: /api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Token
+paths:
+  /login:
+    post:
+      summary: Login user
+      description: |
+        Jika email belum terverifikasi maka response tetap 200 dengan
+        `data.requires_email_verification=true` dan tanpa auth token.
+      requestBody:
+        required: true
+      responses:
+        '200': { description: Login success }
+        '401': { description: Invalid credentials }
+        '429': { description: Too many attempts (temporary lockout) }
+        '422': { description: Validation error }
+  /register:
+    post:
+      summary: Register user
+      description: |
+        Register selalu mengembalikan status verifikasi email.
+        User baru tidak langsung mendapatkan auth token.
+      requestBody:
+        required: true
+      responses:
+        '201': { description: Registered }
+        '422': { description: Validation error }
+  /email/verification/resend:
+    post:
+      summary: Resend verification email using verification challenge token
+      requestBody:
+        required: true
+      responses:
+        '200': { description: Request accepted (generic anti-enumeration response) }
+        '422': { description: Validation error }
+  /email/verification/status:
+    post:
+      summary: Check email verification status using verification challenge token
+      requestBody:
+        required: true
+      responses:
+        '200': { description: Verification status loaded }
+        '400': { description: Invalid or expired verification token }
+        '422': { description: Validation error }
+  /password/forgot:
+    post:
+      summary: Request password reset email (generic response)
+      requestBody:
+        required: true
+      responses:
+        '200': { description: Request accepted (generic anti-enumeration response) }
+        '422': { description: Validation error }
+  /login/verify-2fa:
+    post:
+      summary: Verify second factor during login
+      requestBody:
+        required: true
+      responses:
+        '200': { description: 2FA login verified }
+        '400': { description: Invalid verification code }
+        '401': { description: Invalid or expired temporary session }
+        '429': { description: Too many attempts (temporary lockout) }
+        '404': { description: User not found }
+        '422': { description: Validation error }
+  /logout-all-devices:
+    post:
+      summary: Revoke all active sessions for current user
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: All sessions revoked }
+        '401': { description: Unauthorized }
+  /sessions:
+    get:
+      summary: List active/revoked refresh-token sessions for current user
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Sessions loaded }
+        '401': { description: Unauthorized }
+  /sessions/current:
+    get:
+      summary: Get current session for this device/token
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Current session loaded (or null if not found) }
+        '401': { description: Unauthorized }
+  /sessions/current/revoke:
+    post:
+      summary: Revoke current session by refresh token
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+      responses:
+        '200': { description: Current session revoked }
+        '401': { description: Unauthorized }
+        '404': { description: Refresh token not found for user }
+        '422': { description: Validation error }
+  /sessions/{sessionId}:
+    delete:
+      summary: Revoke one device session
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Session revoked }
+        '409': { description: Cannot revoke current active session from list; use current-session revoke endpoint }
+        '401': { description: Unauthorized }
+        '404': { description: Session not found }
+  /2fa/status:
+    get:
+      summary: Get current user 2FA status
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '401': { description: Unauthorized }
+  /2fa/backup-codes:
+    get:
+      summary: Get remaining backup codes for current user
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Backup codes loaded }
+        '400': { description: 2FA is not enabled }
+        '401': { description: Unauthorized }
+  /2fa/regenerate-backup-codes:
+    post:
+      summary: Regenerate backup codes for current user
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+      responses:
+        '200': { description: Backup codes regenerated }
+        '400': { description: Invalid password or 2FA disabled }
+        '401': { description: Unauthorized }
+        '422': { description: Validation error }
+  /2fa/verify-backup-code:
+    post:
+      summary: Verify one backup code for current user
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+      responses:
+        '200': { description: Backup code verified }
+        '400': { description: Invalid backup code or 2FA disabled }
+        '401': { description: Unauthorized }
+        '422': { description: Validation error }
+  /kitab:
+    get:
+      summary: List kitab
+      description: Only returns kitab with `publication_status=published`.
+      responses:
+        '200': { description: OK }
+  /kitab/search:
+    get:
+      summary: Search kitab
+      description: Search over published kitab only. Query can be empty for discovery feed or filter-only search.
+      parameters:
+        - in: query
+          name: query
+          schema: { type: string }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+        - in: query
+          name: offset
+          schema: { type: integer, minimum: 0, default: 0 }
+        - in: query
+          name: categories
+          schema: { type: string }
+        - in: query
+          name: languages
+          schema: { type: string }
+        - in: query
+          name: authors
+          schema: { type: string }
+        - in: query
+          name: sort_by
+          schema: { type: string, enum: [relevance, views, downloads, latest, title, author, title_asc, title_desc, author_asc, author_desc, newest, oldest] }
+        - in: query
+          name: sort_order
+          schema: { type: string, enum: [asc, desc] }
+      responses:
+        '200': { description: OK }
+        '422': { description: Invalid filter payload }
+  /kitab/{id_kitab}/download:
+    get:
+      summary: Download kitab PDF (supports HTTP Range resume)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id_kitab
+          required: true
+          schema: { type: integer }
+        - in: header
+          name: Range
+          required: false
+          schema: { type: string }
+          description: Example `bytes=0-` or `bytes=1024-2048`
+      responses:
+        '200': { description: Full file response }
+        '206': { description: Partial Content for resume }
+        '401': { description: Unauthorized }
+        '404': { description: File or kitab not found }
+        '416': { description: Invalid byte range }
+  /search/suggestions:
+    get:
+      summary: Search suggestions
+      description: Suggestions are generated from published kitab only. Returns an empty list when query length is under 2 characters.
+      parameters:
+        - in: query
+          name: query
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 10, default: 10 }
+      responses:
+        '200': { description: OK }
+  /search/history:
+    get:
+      summary: Get search history
+      description: Returns up to 20 most recent search history items for the authenticated user.
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '401': { description: Unauthorized }
+    post:
+      summary: Save search history
+      description: Saves or refreshes a normalized non-empty query. Duplicate queries per user are de-duplicated case-insensitively.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query:
+                  type: string
+                filters:
+                  type: object
+                  additionalProperties: true
+                  nullable: true
+                result_count:
+                  type: integer
+                  minimum: 0
+      responses:
+        '201': { description: Created }
+        '200': { description: Updated }
+        '401': { description: Unauthorized }
+        '422': { description: Validation error }
+    delete:
+      summary: Clear all search history
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Cleared }
+        '401': { description: Unauthorized }
+  /search/history/{id}:
+    delete:
+      summary: Delete search history item
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Deleted }
+        '401': { description: Unauthorized }
+  /notifications:
+    get:
+      summary: Get notifications
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '401': { description: Unauthorized }
+  /notifications/unread-count:
+    get:
+      summary: Get unread count for current user
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '401': { description: Unauthorized }
+  /notifications/{id}/read:
+    post:
+      summary: Mark notification as read
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Marked as read }
+        '401': { description: Unauthorized }
+        '404': { description: Not found }
+  /notifications/read-all:
+    post:
+      summary: Mark all notifications as read for current user
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Marked all as read }
+        '401': { description: Unauthorized }
+  /admin/kitab/store:
+    post:
+      summary: Store kitab (admin)
+      description: Creates kitab as `draft` (not automatically published).
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Created }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+  /admin/kitab/{id_kitab}/submit-review:
+    post:
+      summary: Move kitab draft to review (admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id_kitab
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Status changed to review }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '422': { description: Invalid transition }
+  /admin/kitab/{id_kitab}/publish:
+    post:
+      summary: Publish reviewed kitab (admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id_kitab
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Kitab published }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '422': { description: Invalid transition }
+  /admin/kitab/{id_kitab}/return-draft:
+    post:
+      summary: Return reviewed or published kitab back to draft (admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id_kitab
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Status changed to draft }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+        '422': { description: Invalid transition }
+  /admin/kitab/{id_kitab}/revisions:
+    get:
+      summary: Get revision history for kitab (admin)
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id_kitab
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Revision history list }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }
+  /reading-notes:
+    post:
+      summary: Create reading note
+      description: Supports idempotency using optional `client_request_id`.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+      responses:
+        '201': { description: Created }
+        '200': { description: Existing note returned for duplicate client_request_id }
+        '401': { description: Unauthorized }
+        '422': { description: Validation failed }
+  /admin/kitab/stats:
+    get:
+      summary: Admin kitab stats
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+        '401': { description: Unauthorized }
+        '403': { description: Forbidden }

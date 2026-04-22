@@ -1,0 +1,19 @@
+[readiness] Laravel version
+[readiness][PASS] Laravel artisan dapat dijalankan
+[readiness] PHP extension check
+[readiness][PASS] pdo_mysql tersedia
+[readiness] Lint critical backend files
+[readiness][PASS] ApiAuth.php valid
+[readiness][PASS] ApiPageBookmarkController.php valid
+[readiness][PASS] routes/api.php valid
+[readiness] Lint all migration files
+[readiness][PASS] Semua migration file lulus PHP lint
+[readiness] Route checks
+[readiness][PASS] Route v1 refresh-token terdaftar
+[readiness][PASS] Route legacy refresh-token terdaftar
+[readiness][PASS] Route page-bookmarks (GET/POST/DELETE) terdaftar
+[readiness] DB connectivity + migration status
+[readiness][PASS] Koneksi DB OK dan migrate:status berhasil
+[readiness][PASS] Tidak ada migration pending
+
+[readiness] Summary: PASS=11 WARN=0 FAIL=0

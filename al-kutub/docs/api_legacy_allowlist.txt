@@ -1,0 +1,13 @@
+api/katalog
+api/katalog/filter
+api/kitab
+api/kitab/search
+api/kitab/{id_kitab}
+api/kitab/{id_kitab}/comments
+api/kitab/{id_kitab}/related
+api/login
+api/login/verify-2fa
+api/notifications
+api/notifications/latest
+api/refresh-token
+api/register

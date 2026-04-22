@@ -1,0 +1,25 @@
+Warning: TTY mode requires /dev/tty to be read/writable.
+
+  [30;43;1m WARN [39;49;22m[39m Tests\Feature\KitabPublicationWorkflowTest[39m
+  [33;1m-[39;22m[39m [2madmin can transition draft review published and back to draft[22m[39m[33m → pdo_sqlite extension is not available in this environment.[39m
+  [33;1m-[39;22m[39m [2mpublish is blocked when quality gate is not satisfied[22m[39m[33m → pdo_sqlite extension is not available in this environment.[39m
+
+  [30;43;1m WARN [39;49;22m[39m Tests\Feature\PublishedOnlyVisibilityTest[39m
+  [33;1m-[39;22m[39m [2mpublic api only exposes published kitab[22m[39m[33m → pdo_sqlite extension is not available in this environment.[39m
+
+  [30;43;1m WARN [39;49;22m[39m Tests\Feature\ReadingNoteIdempotencyTest[39m
+  [33;1m-[39;22m[39m [2mcreate reading note is idempotent with client request id[22m[39m[33m → pdo_sqlite extension is not available in this environment.[39m
+
+  [30;43;1m WARN [39;49;22m[39m Tests\Feature\RequestTraceMiddlewareTest[39m
+  [33;1m-[39;22m[39m [2mapi response contains generated request id header[22m[39m[33m → pdo_sqlite extension is not available in this environment.[39m
+  [33;1m-[39;22m[39m [2mapi reuses request id from header when provided[22m[39m[33m → pdo_sqlite extension is not available in this environment.[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\SecurityHardeningTest[39m
+  [32;1m✓[39;22m[39m [2mphpinfo route not available outside local environment[22m[39m
+  [32;1m✓[39;22m[39m [2madmin kitab stats requires authentication[22m[39m
+  [32;1m✓[39;22m[39m [2mnon admin user cannot access admin kitab stats[22m[39m
+  [32;1m✓[39;22m[39m [2mnotifications unread count requires authentication[22m[39m
+
+  [37;1mTests:  [39;22m[33;1m6 skipped[39;22m[39m, [39m[32;1m4 passed[39;22m
+  [37;1mTime:   [39;22m[39m0.24s[39m
+
