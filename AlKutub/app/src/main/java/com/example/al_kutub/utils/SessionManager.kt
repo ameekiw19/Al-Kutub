@@ -40,8 +40,6 @@ class SessionManager @Inject constructor(@ApplicationContext private val context
     fun saveToken(token: String) {
         prefs.edit().putString(KEY_TOKEN, token).apply()
         Log.d(TAG, "✅ Token saved successfully")
-        Log.d(TAG, "Token preview: ${token.take(20)}...")
-        Log.d(TAG, "Token length: ${token.length}")
     }
 
     // ✅ PERBAIKAN: Ambil token
@@ -53,7 +51,7 @@ class SessionManager @Inject constructor(@ApplicationContext private val context
             // Jangan log sebagai error - null token normal saat user belum login
             null
         } else {
-            Log.d(TAG, "✅ Valid token found (${token.take(20)}...)")
+            Log.d(TAG, "✅ Valid token found")
             token
         }
 
@@ -135,7 +133,7 @@ class SessionManager @Inject constructor(@ApplicationContext private val context
     // Debug function
     fun debugState() {
         Log.d(TAG, "=== SESSION DEBUG ===")
-        Log.d(TAG, "Token: ${getToken()?.take(20) ?: "null"}...")
+        Log.d(TAG, "Token present: ${!getToken().isNullOrEmpty()}")
         Log.d(TAG, "User ID: ${getUserId()}")
         Log.d(TAG, "Username: ${getUsername()}")
         Log.d(TAG, "Is logged in: ${isLoggedIn()}")

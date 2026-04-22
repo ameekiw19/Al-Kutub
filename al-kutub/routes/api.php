@@ -14,6 +14,8 @@ use App\Http\Controllers\ApiTwoFactorController;
 use App\Http\Controllers\ApiAuditController;
 use App\Http\Controllers\ApiReadingNoteController;
 use App\Http\Controllers\ApiPageBookmarkController;
+use App\Http\Controllers\ApiEmailVerificationController;
+use App\Http\Controllers\ApiPasswordResetController;
 use App\Http\Controllers\Api\KitabTranscriptController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\ThemeController;
@@ -34,6 +36,9 @@ Route::middleware('security')->group(function () {
     Route::post('/login', [ApiAuth::class, 'login']);
     Route::post('/login/verify-2fa', [ApiAuth::class, 'verify2FA']);
     Route::post('/register', [ApiAuth::class, 'register']);
+    Route::post('/email/verification/resend', [ApiEmailVerificationController::class, 'resend']);
+    Route::post('/email/verification/status', [ApiEmailVerificationController::class, 'status']);
+    Route::post('/password/forgot', [ApiPasswordResetController::class, 'forgotPassword']);
 });
 
 // ===== PUBLIC KITAB ROUTES (No Auth Required) =====
@@ -65,6 +70,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/logout', [ApiAuth::class, 'logout']);
     Route::get('/me', [ApiAuth::class, 'me']);
+    Route::post('/logout-all-devices', [ApiAuth::class, 'logoutAllDevices']);
+    Route::get('/sessions', [ApiAuth::class, 'listSessions']);
+    Route::get('/sessions/current', [ApiAuth::class, 'currentSession']);
+    Route::post('/sessions/current/revoke', [ApiAuth::class, 'revokeCurrentSessionByRefreshToken']);
+    Route::delete('/sessions/{sessionId}', [ApiAuth::class, 'revokeSession']);
 
     // ===== ACCOUNT MANAGEMENT (NEW) =====
     Route::prefix('account')->group(function () {
@@ -179,9 +189,13 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // ===== Admin Kitab AJAX Routes (simple version for testing)
-Route::prefix('admin/kitab')->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin/kitab')->group(function () {
     Route::post('/store', [App\Http\Controllers\Api\AdminKitabControllerSimple::class, 'store']);
     Route::get('/stats', [App\Http\Controllers\Api\AdminKitabControllerSimple::class, 'getStats']);
+    Route::post('/{id_kitab}/submit-review', [App\Http\Controllers\Api\AdminKitabControllerSimple::class, 'submitReview']);
+    Route::post('/{id_kitab}/publish', [App\Http\Controllers\Api\AdminKitabControllerSimple::class, 'publish']);
+    Route::post('/{id_kitab}/return-draft', [App\Http\Controllers\Api\AdminKitabControllerSimple::class, 'returnDraft']);
+    Route::get('/{id_kitab}/revisions', [App\Http\Controllers\Api\AdminKitabControllerSimple::class, 'revisions']);
 });
 
 // ===== NOTIFICATION ROUTES (Public for polling) =====
@@ -195,6 +209,7 @@ Route::middleware('auth:sanctum')->prefix('notifications')->group(function () {
     Route::get('/', [App\Http\Controllers\Api\NotificationController::class, 'index']);
     Route::get('/unread-count', [App\Http\Controllers\Api\NotificationController::class, 'unreadCount']);
     Route::post('/{id}/read', [App\Http\Controllers\Api\NotificationController::class, 'markAsRead']);
+    Route::post('/read-all', [App\Http\Controllers\Api\NotificationController::class, 'markAllAsRead']);
 });
 Route::get('/notifications', [ApiNotificationController::class, 'index']);
 Route::get('/notifications/latest', [ApiNotificationController::class, 'latest']);

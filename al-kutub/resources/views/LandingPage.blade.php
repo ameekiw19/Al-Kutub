@@ -14,15 +14,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #1B5E3B;
-            --primary-light: #2D7A52;
-            --primary-dark: #1A4A30;
-            --accent: #C8A951;
-            --bg: #FAFAF5;
-            --card: #FFFFFF;
-            --text: #1A2E1A;
-            --text-light: #8B8070;
-            --border: #E8E3D5;
+            --primary: rgb(27, 94, 59);
+            --primary-light: rgb(45, 122, 82);
+            --primary-dark: rgb(26, 74, 48);
+            --accent: rgb(200, 169, 81);
+            --bg: rgb(250, 250, 245);
+            --card: rgb(255, 255, 255);
+            --text: rgb(26, 46, 26);
+            --text-light: rgb(139, 128, 112);
+            --border: rgb(232, 227, 213);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }

@@ -45,7 +45,9 @@ class AuditMiddleware
         // Define actions to audit
         $auditActions = [
             'POST' => [
+                'admin.kitab.store' => 'kitab_created',
                 'admin.kitab.addkitab' => 'kitab_created',
+                'admin.kitab.update' => 'kitab_updated',
                 'admin.update-user-role' => 'role_updated',
                 'admin.notifications.send' => 'notification_sent',
                 '2fa.enable' => '2fa_enabled',
@@ -56,6 +58,7 @@ class AuditMiddleware
                 'user.update' => 'profile_updated',
             ],
             'DELETE' => [
+                'admin.kitab.destroy' => 'kitab_deleted',
                 'admin.deletekitab' => 'kitab_deleted',
                 'admin.user.delete' => 'user_deleted',
                 'admin.comments.delete' => 'comment.delete',

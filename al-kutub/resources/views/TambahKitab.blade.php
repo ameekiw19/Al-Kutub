@@ -11,7 +11,7 @@
             <nav aria-label="breadcrumb" class="d-none d-md-block">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ url('admin/manejemenkitab') }}">Kitab</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.kitab.index') }}">Kitab</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Tambah</li>
                 </ol>
             </nav>
@@ -121,7 +121,7 @@
             
             <div class="card-footer bg-light py-3 border-top">
                 <div class="d-flex justify-content-between align-items-center">
-                    <a href="{{ url('admin/manejemenkitab') }}" class="btn btn-link text-muted text-decoration-none fw-bold small">
+                    <a href="{{ route('admin.kitab.index') }}" class="btn btn-link text-muted text-decoration-none fw-bold small">
                         <i class="bi bi-arrow-left me-1"></i> Kembali
                     </a>
                     <button type="submit" class="btn btn-primary btn-lg shadow-sm px-5 fw-bold" id="submitBtn">
@@ -318,7 +318,7 @@
                 cover_size: (coverFile.size / 1024 / 1024).toFixed(2) + 'MB'
             });
 
-            fetch("{{ url('admin/addkitab') }}", {
+            fetch("{{ route('admin.kitab.store') }}", {
                 method: "POST",
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -343,7 +343,7 @@
                     confirmButtonColor: '#44A194',
                     customClass: { popup: 'rounded-4 border-0' }
                 }).then(() => {
-                    window.location.href = "{{ url('admin/manejemenkitab') }}";
+                    window.location.href = "{{ route('admin.kitab.index') }}";
                 });
             })
             .catch(error => {

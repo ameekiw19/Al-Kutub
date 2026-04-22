@@ -1,6 +1,7 @@
 package com.example.al_kutub.api
 
 import android.net.Uri
+import com.example.al_kutub.BuildConfig
 import com.example.al_kutub.data.remote.NotificationApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,10 +11,9 @@ import java.net.URI
 import java.util.concurrent.TimeUnit
 
 object ApiConfig {
-    // TODO: GANTI URL INI DENGAN URL NGROK ANDA (https://xxxx.ngrok-free.app/api/v1/)
-    private const val BASE_URL = "http://10.0.2.2:8000/api/v1/" // UNTUK EMULATOR LOKAL - pakai v1 untuk versioning
-    // private const val BASE_URL = "YOUR_NGROK_URL_HERE/api/v1/" // GANTI INI DENGAN URL NGROK ANDA
-    private const val BASE_WEB_URL = "http://10.0.2.2:8000/" // Base untuk share link kitab (web route)
+    private val BASE_URL: String = ensureTrailingSlash(BuildConfig.BASE_API_URL)
+    private val BASE_WEB_URL: String = ensureTrailingSlash(BuildConfig.BASE_WEB_URL)
+
     fun getKitabShareUrl(kitabId: Int): String = "${BASE_WEB_URL}kitab/view/$kitabId"
 
     fun getWebAssetUrl(path: String?): String {
@@ -89,25 +89,34 @@ object ApiConfig {
             .joinToString("/") { segment -> Uri.encode(segment) }
     }
 
-    fun getApiService(): ApiService {
+    private fun createClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
-        
-        val client = OkHttpClient.Builder()
+
+        return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS) // Connection timeout
-            .readTimeout(30, TimeUnit.SECONDS)    // Read timeout
-            .writeTimeout(30, TimeUnit.SECONDS)   // Write timeout
-            .retryOnConnectionFailure(true)       // Retry on connection failure
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
             .build()
-            
-        val retrofit = Retrofit.Builder()
+    }
+
+    private fun createRetrofit(): Retrofit {
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
+            .client(createClient())
             .build()
-        return retrofit.create(ApiService::class.java)
+    }
+
+    fun getApiService(): ApiService {
+        return createRetrofit().create(ApiService::class.java)
     }
 
     // Backward-compatible overload for older call sites that still pass SessionManager.
@@ -116,28 +125,15 @@ object ApiConfig {
     ): ApiService = getApiService()
     
     fun getNotificationApiService(): NotificationApiService {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        
-        val client = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS) // Connection timeout
-            .readTimeout(30, TimeUnit.SECONDS)    // Read timeout
-            .writeTimeout(30, TimeUnit.SECONDS)   // Write timeout
-            .retryOnConnectionFailure(true)       // Retry on connection failure
-            .build()
-            
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-        return retrofit.create(NotificationApiService::class.java)
+        return createRetrofit().create(NotificationApiService::class.java)
     }
 
     // Backward-compatible overload for older call sites that still pass SessionManager.
     fun getNotificationApiService(
         @Suppress("UNUSED_PARAMETER") sessionManager: com.example.al_kutub.utils.SessionManager
     ): NotificationApiService = getNotificationApiService()
+
+    private fun ensureTrailingSlash(url: String): String {
+        return if (url.endsWith("/")) url else "$url/"
+    }
 }

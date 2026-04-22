@@ -1,0 +1,31 @@
+Warning: TTY mode requires /dev/tty to be read/writable.
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\SecurityHardeningTest[39m
+  [32;1m✓[39;22m[39m [2mphpinfo route not available outside local environment[22m[39m
+  [32;1m✓[39;22m[39m [2madmin kitab stats requires authentication[22m[39m
+  [32;1m✓[39;22m[39m [2mnon admin user cannot access admin kitab stats[22m[39m
+  [32;1m✓[39;22m[39m [2mnotifications unread count requires authentication[22m[39m
+
+  [37;1mTests:  [39;22m[32;1m4 passed[39;22m
+  [37;1mTime:   [39;22m[39m0.23s[39m
+
+Warning: TTY mode requires /dev/tty to be read/writable.
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\ApiContractLockTest[39m
+  [32;1m✓[39;22m[39m [2mopenapi documented paths exist in v1 routes[22m[39m
+  [32;1m✓[39;22m[39m [2munversioned api routes must be in legacy allowlist[22m[39m
+
+  [37;1mTests:  [39;22m[32;1m2 passed[39;22m
+  [37;1mTime:   [39;22m[39m0.14s[39m
+
+Warning: TTY mode requires /dev/tty to be read/writable.
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\WebAjaxJsonErrorContractTest[39m
+  [32;1m✓[39;22m[39m [2majax runtime exception returns json contract[22m[39m
+  [32;1m✓[39;22m[39m [2majax method not allowed returns json contract[22m[39m
+  [32;1m✓[39;22m[39m [2majax token mismatch exception returns json contract[22m[39m
+  [32;1m✓[39;22m[39m [2majax admin update without auth returns json not html redirect[22m[39m
+
+  [37;1mTests:  [39;22m[32;1m4 passed[39;22m
+  [37;1mTime:   [39;22m[39m0.19s[39m
+

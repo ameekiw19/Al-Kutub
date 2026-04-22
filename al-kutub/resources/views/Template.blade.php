@@ -45,7 +45,7 @@
                 <div class="sidebar-header position-relative pt-4 pb-2">
                     <div class="d-flex justify-content-between align-items-center px-4">
                         <div class="logo d-flex align-items-center gap-3">
-                            <a href="{{ url('/admin/home') }}" class="d-flex align-items-center gap-3 text-decoration-none">
+                            <a href="{{ route('admin.home') }}" class="d-flex align-items-center gap-3 text-decoration-none">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-4"
                                       style="width: 40px; height: 40px; background: var(--primary-color);">
                                     <img src="{{ asset('assets/static/images/logo/al-kutub-symbol.svg') }}"
@@ -73,8 +73,8 @@
                     <ul class="menu mt-3">
                         <li class="sidebar-title text-muted text-uppercase fw-semibold" style="font-size: 0.75rem; letter-spacing: 1px;">Home</li>
                         
-                        <li class="sidebar-item {{ request()->is('admin/home') ? 'active' : '' }}">
-                            <a href="{{ url('/admin/home') }}" class='sidebar-link rounded-4'>
+                        <li class="sidebar-item {{ request()->routeIs('admin.home') ? 'active' : '' }}">
+                            <a href="{{ route('admin.home') }}" class='sidebar-link rounded-4'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Ringkasan</span>
                             </a>
@@ -89,8 +89,8 @@
 
                         <li class="sidebar-title text-muted text-uppercase fw-semibold mt-4" style="font-size: 0.75rem; letter-spacing: 1px;">Manajemen</li>
 
-                        <li class="sidebar-item {{ request()->is('admin/manejemenkitab') ? 'active' : '' }}">
-                            <a href="{{ url('/admin/manejemenkitab') }}" class='sidebar-link rounded-4'>
+                        <li class="sidebar-item {{ request()->routeIs('admin.kitab.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.kitab.index') }}" class='sidebar-link rounded-4'>
                                 <i class="fas fa-book"></i>
                                 <span>Manajemen Kitab</span>
                             </a>
@@ -103,8 +103,8 @@
                             </a>
                         </li>
                         
-                        <li class="sidebar-item {{ request()->is('admin/manejemenuser') ? 'active' : '' }}">
-                            <a href="{{ url('/admin/manejemenuser') }}" class='sidebar-link rounded-4'>
+                        <li class="sidebar-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.users.index') }}" class='sidebar-link rounded-4'>
                                 <i class="fas fa-users"></i>
                                 <span>Manajemen Users</span>
                             </a>
@@ -267,20 +267,20 @@
     <!-- Global Styles for Admin Redesign -->
     <style>
         :root {
-            --primary-color: #1B5E3B;
-            --primary-dark: #1A4A30;
-            --secondary-color: #F8F5EF;
-            --text-color: #1A2E1A;
-            --light-text: #8B8070;
-            --bg-color: #FAFAF5;
-            --card-bg: #ffffff;
-            --border-color: #E8E3D5;
+            --primary-color: rgb(27, 94, 59);
+            --primary-dark: rgb(26, 74, 48);
+            --secondary-color: rgb(248, 245, 239);
+            --text-color: rgb(26, 46, 26);
+            --light-text: rgb(139, 128, 112);
+            --bg-color: rgb(250, 250, 245);
+            --card-bg: rgb(255, 255, 255);
+            --border-color: rgb(232, 227, 213);
             --border-radius: 16px;
         }
 
         body {
             background-color: var(--bg-color);
-            font-family: 'Poppins', 'Nunito', sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: var(--text-color);
         }
 

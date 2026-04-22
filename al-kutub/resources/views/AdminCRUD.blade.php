@@ -8,7 +8,7 @@
             <p class="text-subtitle text-muted mb-0">Kelola katalog kitab dan perpustakaan digital.</p>
         </div>
         <div>
-            <a href="{{ url('admin/tambahkitab') }}" class="btn btn-primary shadow-sm fw-bold px-4 py-2">
+            <a href="{{ route('admin.kitab.create') }}" class="btn btn-primary shadow-sm fw-bold px-4 py-2">
                 <i class="bi bi-plus-lg me-2"></i>Tambah Kitab
             </a>
             <button type="button" class="btn btn-outline-success shadow-sm fw-bold px-4 py-2 ms-2" id="btnImportAllTranscript">
@@ -114,7 +114,7 @@
                                         </td>
                                         <td class="px-4 py-3 text-end">
                                             <div class="d-flex justify-content-end gap-2">
-                                                <a href="{{ url('admin/editkitab/' . $kitab->id_kitab) }}" class="btn btn-sm btn-light-warning text-warning shadow-sm" data-bs-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.kitab.edit', ['id_kitab' => $kitab->id_kitab]) }}" class="btn btn-sm btn-light-warning text-warning shadow-sm" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-sm btn-light-success text-success shadow-sm btn-import-transcript" data-id="{{ $kitab->id_kitab }}" data-title="{{ $kitab->judul }}" data-bs-toggle="tooltip" title="Generate Transcript">
@@ -123,7 +123,7 @@
                                                 <button type="button" onclick="DeleteKitab('{{ $kitab->id_kitab }}')" class="btn btn-sm btn-light-danger text-danger shadow-sm btn-delete-kitab" data-bs-toggle="tooltip" title="Hapus">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
-                                                <a href="{{ url('admin/kitab/' . $kitab->id_kitab) }}" class="btn btn-sm btn-light-info text-info shadow-sm" data-bs-toggle="tooltip" title="Detail">
+                                                <a href="{{ route('admin.kitab.show', ['id_kitab' => $kitab->id_kitab]) }}" class="btn btn-sm btn-light-info text-info shadow-sm" data-bs-toggle="tooltip" title="Detail">
                                                     <i class="bi bi-info-circle"></i>
                                                 </a>
                                             </div>
@@ -187,7 +187,7 @@
                                         </td>
                                         <td class="px-4 py-3 text-end">
                                             <div class="d-flex justify-content-end gap-2">
-                                                <a href="{{ url('admin/editkitab/' . $kitab->id_kitab) }}" class="btn btn-sm btn-light-warning text-warning shadow-sm" data-bs-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.kitab.edit', ['id_kitab' => $kitab->id_kitab]) }}" class="btn btn-sm btn-light-warning text-warning shadow-sm" data-bs-toggle="tooltip" title="Edit">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-sm btn-light-success text-success shadow-sm btn-import-transcript" data-id="{{ $kitab->id_kitab }}" data-title="{{ $kitab->judul }}" data-bs-toggle="tooltip" title="Generate Transcript">
@@ -196,7 +196,7 @@
                                                 <button type="button" onclick="DeleteKitab('{{ $kitab->id_kitab }}')" class="btn btn-sm btn-light-danger text-danger shadow-sm btn-delete-kitab" data-bs-toggle="tooltip" title="Hapus">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
-                                                <a href="{{ url('admin/kitab/' . $kitab->id_kitab) }}" class="btn btn-sm btn-light-info text-info shadow-sm" data-bs-toggle="tooltip" title="Detail">
+                                                <a href="{{ route('admin.kitab.show', ['id_kitab' => $kitab->id_kitab]) }}" class="btn btn-sm btn-light-info text-info shadow-sm" data-bs-toggle="tooltip" title="Detail">
                                                     <i class="bi bi-info-circle"></i>
                                                 </a>
                                             </div>
@@ -494,7 +494,7 @@
                      customClass: { popup: 'rounded-4 border-0' }
                 });
 
-                fetch(`{{ url('admin/deletekitab') }}/${id_kitab}`, {
+                fetch(`{{ route('admin.kitab.destroy', ['id_kitab' => '__KITAB_ID__']) }}`.replace('__KITAB_ID__', id_kitab), {
                     method: "DELETE",
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

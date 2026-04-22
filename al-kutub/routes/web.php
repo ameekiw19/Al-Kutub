@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AdminControllerFixed;
+use App\Http\Controllers\AdminKitabController;
 use App\Http\Controllers\Register;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\AccountController;
@@ -31,9 +31,11 @@ use App\Http\Controllers\ReadingNoteController;
 |
 */
 
-Route::get('/phpinfo', function () {
-    phpinfo();
-});
+if (app()->environment('local')) {
+    Route::get('/phpinfo', function () {
+        phpinfo();
+    });
+}
 
 
 //AUTH
@@ -63,64 +65,12 @@ Route::post('/2fa/verify', [TwoFactorController::class, 'verify'])->name('2fa.ve
 
 // ================== ADMIN ROUTE ==================
 Route::middleware(['auth', 'role:admin', 'audit'])->prefix('admin')->group(function () {
-    Route::get('home', [AdminController::class, 'HomeAdmin']);
+    Route::get('home', [AdminController::class, 'HomeAdmin'])->name('admin.home');
     
     // AJAX Kitab Form
     Route::get('tambah-kitab-ajax', function() {
         return view('TambahKitabAjax');
     })->name('admin.tambah-kitab-ajax');
-    
-    // Test Route untuk Debug
-    Route::get('test-dashboard', function() {
-        $dashboardController = new \App\Http\Controllers\DashboardController();
-        $overviewStats = $dashboardController->getOverviewStats()->getData(true);
-        
-        return response()->json([
-            'status' => 'success',
-            'data' => $overviewStats,
-            'message' => 'Dashboard data loaded successfully'
-        ]);
-    });
-    
-    // Test View Rendering
-    Route::get('test-view', function() {
-        try {
-            $controller = new \App\Http\Controllers\AdminController();
-            $view = $controller->HomeAdmin();
-            
-            return response()->json([
-                'status' => 'success',
-                'view' => $view->name(),
-                'data_count' => count($view->getData()),
-                'message' => 'View rendered successfully'
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-        }
-    });
-    
-    // Test Dashboard View
-    Route::get('test-dashboard-view', function() {
-        try {
-            $controller = new \App\Http\Controllers\AdminController();
-            $view = $controller->HomeAdmin();
-            
-            // Return TestDashboard view with same data
-            return view('TestDashboard', $view->getData());
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-        }
-    });
     
     // Dashboard Analytics
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -145,25 +95,34 @@ Route::middleware(['auth', 'role:admin', 'audit'])->prefix('admin')->group(funct
     Route::put('categories/{id}', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
     Route::delete('categories/{id}', [AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
-    // Manajemen Kitab
-    Route::get('manejemenkitab', [AdminControllerFixed::class, 'CRUDAdmin']);
-    Route::get('tambahkitab', [AdminControllerFixed::class, 'TambahKitab']);
-    Route::post('addkitab', [AdminControllerFixed::class, 'AddKitab']);
-    Route::get('editkitab/{id_kitab}', [AdminControllerFixed::class, 'EditKitab']);
-    Route::post('updatekitab/{id_kitab}', [AdminControllerFixed::class, 'UpdateKitab']);
-    Route::delete('deletekitab/{id_kitab}', [AdminControllerFixed::class, 'DeleteKitab']);
-    Route::post('kitab/bulk-delete', [AdminControllerFixed::class, 'bulkDelete'])->name('admin.kitab.bulk-delete');
-    Route::get('kitab/bulk-export', [AdminControllerFixed::class, 'bulkExport'])->name('admin.kitab.bulk-export');
-    Route::post('kitab/{id_kitab}/import-transcript', [AdminControllerFixed::class, 'importTranscript'])->name('admin.kitab.import-transcript');
-    Route::post('kitab/import-transcripts', [AdminControllerFixed::class, 'bulkImportTranscripts'])->name('admin.kitab.bulk-import-transcripts');
+    // Manajemen Kitab (canonical routes)
+    Route::get('kitab', [AdminKitabController::class, 'CRUDAdmin'])->name('admin.kitab.index');
+    Route::get('kitab/create', [AdminKitabController::class, 'TambahKitab'])->name('admin.kitab.create');
+    Route::post('kitab', [AdminKitabController::class, 'AddKitab'])->name('admin.kitab.store');
+    Route::get('kitab/{id_kitab}/edit', [AdminKitabController::class, 'EditKitab'])->name('admin.kitab.edit');
+    Route::post('kitab/{id_kitab}', [AdminKitabController::class, 'UpdateKitab'])->name('admin.kitab.update');
+    Route::delete('kitab/{id_kitab}', [AdminKitabController::class, 'DeleteKitab'])->name('admin.kitab.destroy');
+    Route::post('kitab/bulk-delete', [AdminKitabController::class, 'bulkDelete'])->name('admin.kitab.bulk-delete');
+    Route::get('kitab/bulk-export', [AdminKitabController::class, 'bulkExport'])->name('admin.kitab.bulk-export');
+    Route::post('kitab/{id_kitab}/import-transcript', [AdminKitabController::class, 'importTranscript'])->name('admin.kitab.import-transcript');
+    Route::post('kitab/import-transcripts', [AdminKitabController::class, 'bulkImportTranscripts'])->name('admin.kitab.bulk-import-transcripts');
+
+    // Manajemen Kitab (legacy routes kept for backward compatibility)
+    Route::get('manejemenkitab', [AdminKitabController::class, 'CRUDAdmin'])->name('admin.kitab.legacy-index');
+    Route::get('tambahkitab', [AdminKitabController::class, 'TambahKitab'])->name('admin.kitab.legacy-create');
+    Route::post('addkitab', [AdminKitabController::class, 'AddKitab'])->name('admin.kitab.addkitab');
+    Route::get('editkitab/{id_kitab}', [AdminKitabController::class, 'EditKitab'])->name('admin.kitab.legacy-edit');
+    Route::post('updatekitab/{id_kitab}', [AdminKitabController::class, 'UpdateKitab'])->name('admin.updatekitab');
+    Route::delete('deletekitab/{id_kitab}', [AdminKitabController::class, 'DeleteKitab'])->name('admin.deletekitab');
 
     // Detail Kitab
-    Route::get('kitab/{id_kitab}', [AdminController::class, 'Kitab']);
+    Route::get('kitab/{id_kitab}', [AdminController::class, 'Kitab'])->name('admin.kitab.show');
 
-    // Manajemen User
-    Route::get('manejemenuser', [AdminController::class, 'manejemenuser']);
+    // Manajemen User (canonical + legacy)
+    Route::get('users', [AdminController::class, 'manajemenUser'])->name('admin.users.index');
+    Route::get('manejemenuser', [AdminController::class, 'manajemenUser'])->name('admin.users.legacy-index');
     Route::delete('delete-user/{id}', [AdminController::class, 'deleteUser'])->name('admin.user.delete');
-    Route::post('update-user-role/{id}', [AdminController::class, 'updateUserRole'])->name('admin.user.updateRole');
+    Route::post('update-user-role/{id}', [AdminController::class, 'updateUserRole'])->name('admin.update-user-role');
 
     // Notifikasi Manual (Broadcast)
     Route::get('notifications', [AdminController::class, 'NotificationForm'])->name('admin.notifications');
@@ -242,5 +201,3 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/my-account', [AccountController::class, 'edit'])->name('account.edit');
     Route::put('/my-account/update', [AccountController::class, 'update'])->name('user.update');
 });
-
-

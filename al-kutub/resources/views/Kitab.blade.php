@@ -11,7 +11,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ url('admin/manejemenkitab') }}">Kitab</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.kitab.index') }}">Kitab</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Detail</li>
                 </ol>
             </nav>
@@ -46,7 +46,7 @@
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li><a class="dropdown-item" href="{{ url('admin/editkitab/' . $kitab->id_kitab) }}"><i class="bi bi-pencil me-2 text-warning"></i> Edit Data</a></li>
+                                <li><a class="dropdown-item" href="{{ route('admin.kitab.edit', ['id_kitab' => $kitab->id_kitab]) }}"><i class="bi bi-pencil me-2 text-warning"></i> Edit Data</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="DeleteKitab('{{ $kitab->id_kitab }}')"><i class="bi bi-trash me-2"></i> Hapus Kitab</a></li>
                             </ul>
@@ -89,10 +89,10 @@
                         <a href="{{ asset('pdf/' . $kitab->file_pdf) }}" target="_blank" class="btn btn-primary px-4 py-2 fw-bold shadow-sm rounded-3">
                             <i class="bi bi-file-earmark-pdf-fill me-2"></i> Preview PDF
                         </a>
-                        <a href="{{ url('admin/editkitab/' . $kitab->id_kitab) }}" class="btn btn-outline-warning px-4 py-2 fw-bold rounded-3">
+                        <a href="{{ route('admin.kitab.edit', ['id_kitab' => $kitab->id_kitab]) }}" class="btn btn-outline-warning px-4 py-2 fw-bold rounded-3">
                             <i class="bi bi-pencil-square me-2"></i> Edit Kitab
                         </a>
-                        <a href="{{ url('admin/manejemenkitab') }}" class="btn btn-light text-muted px-4 py-2 fw-bold rounded-3 border">
+                        <a href="{{ route('admin.kitab.index') }}" class="btn btn-light text-muted px-4 py-2 fw-bold rounded-3 border">
                             <i class="bi bi-arrow-left me-2"></i> Kembali
                         </a>
                     </div>
@@ -283,7 +283,7 @@
                     customClass: { popup: 'rounded-4 border-0' }
                 });
 
-                fetch(`{{ url('admin/deletekitab') }}/${id_kitab}`, {
+                fetch(`{{ route('admin.kitab.destroy', ['id_kitab' => '__KITAB_ID__']) }}`.replace('__KITAB_ID__', id_kitab), {
                     method: "DELETE",
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -302,7 +302,7 @@
                         timer: 1500,
                         customClass: { popup: 'rounded-4 border-0' }
                     }).then(() => {
-                        window.location.href = "{{ url('admin/manejemenkitab') }}";
+                        window.location.href = "{{ route('admin.kitab.index') }}";
                     });
                 })
                 .catch(err => {

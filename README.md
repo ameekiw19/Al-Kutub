@@ -63,3 +63,10 @@ Silakan sesuaikan dengan data seeder lokal Anda:
 - Notifikasi unread count akurat setelah mark as read.
 - Search + suggestion + history berjalan.
 - Fitur utama Android (katalog, detail, PDF, bookmark, history) tetap normal.
+
+## Dokumentasi Tambahan
+
+- Laporan teknis historis: `docs/archive/root-history/`
+- Materi presentasi: `docs/presentation/`
+- Report regresi dan QA: `docs/reports/`
+- Readiness check otomatis: `scripts/run-final-presentation-check.sh`

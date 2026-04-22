@@ -19,29 +19,29 @@
            ============================================ */
         :root {
             /* Primary Palette (Android Classic) */
-            --primary-color: #1B5E3B;
-            --primary-dark: #1A4A30;
-            --primary-light: #2D7A52;
-            --accent-color: #C8A951;
+            --primary-color: rgb(27, 94, 59);
+            --primary-dark: rgb(26, 74, 48);
+            --primary-light: rgb(45, 122, 82);
+            --accent-color: rgb(200, 169, 81);
 
             /* Surface & Background */
-            --background-color: #FAFAF5;
-            --card-bg: #FFFFFF;
-            --secondary-color: #F8F5EF;
-            --input-bg: #F8F5EF;
+            --background-color: rgb(250, 250, 245);
+            --card-bg: rgb(255, 255, 255);
+            --secondary-color: rgb(248, 245, 239);
+            --input-bg: rgb(248, 245, 239);
 
             /* Text */
-            --text-color: #1A2E1A;
-            --text-secondary: #6B5E4E;
-            --light-text: #8B8070;
+            --text-color: rgb(26, 46, 26);
+            --text-secondary: rgb(107, 94, 78);
+            --light-text: rgb(139, 128, 112);
 
             /* Borders & Dividers */
-            --border-color: #E8E3D5;
-            --card-border: #F0EBE0;
+            --border-color: rgb(232, 227, 213);
+            --card-border: rgb(240, 235, 224);
 
             /* Functional */
-            --error-color: #C62828;
-            --success-color: #2E7D32;
+            --error-color: rgb(198, 40, 40);
+            --success-color: rgb(46, 125, 50);
 
             /* Spacing (Android dp mapped to px) */
             --radius-sm: 10px;
@@ -53,18 +53,18 @@
 
         /* Dark Mode */
         body.dark-mode {
-            --primary-color: #2D7A52;
-            --primary-dark: #1B5E3B;
-            --primary-light: #3D9B6A;
-            --background-color: #121212;
-            --card-bg: #1E1E1E;
-            --secondary-color: #1A1A1A;
-            --input-bg: #2A2A2A;
-            --text-color: #F0EBE0;
-            --text-secondary: #B0A898;
-            --light-text: #8B8B8B;
-            --border-color: #333333;
-            --card-border: #2A2A2A;
+            --primary-color: rgb(45, 122, 82);
+            --primary-dark: rgb(27, 94, 59);
+            --primary-light: rgb(61, 155, 106);
+            --background-color: rgb(18, 18, 18);
+            --card-bg: rgb(30, 30, 30);
+            --secondary-color: rgb(26, 26, 26);
+            --input-bg: rgb(42, 42, 42);
+            --text-color: rgb(240, 235, 224);
+            --text-secondary: rgb(176, 168, 152);
+            --light-text: rgb(139, 139, 139);
+            --border-color: rgb(51, 51, 51);
+            --card-border: rgb(42, 42, 42);
         }
 
         * {

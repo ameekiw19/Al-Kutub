@@ -20,3 +20,6 @@ Thumbs.db
 .zenflow/
 .codex/
 tmp/
+
+# Backup artifacts
+*.bak

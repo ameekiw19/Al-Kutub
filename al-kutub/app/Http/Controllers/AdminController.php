@@ -129,7 +129,7 @@ class AdminController extends Controller
         ));
     }
 
-    public function manejemenuser()
+    public function manajemenUser()
     {
         $users = User::select('id', 'username', 'email', 'deskripsi', 'phone', 'role', 'created_at')
             ->withCount('bookmarks')
@@ -142,10 +142,18 @@ class AdminController extends Controller
         $activeUsersToday = History::whereDate('last_read_at', today())
             ->distinct('user_id')->count('user_id');
 
-        return view('ManejemenUser', compact(
+        return view('ManajemenUser', compact(
             'users', 'totalUsers', 'totalAdmins',
             'newUsersThisMonth', 'activeUsersToday'
         ));
+    }
+
+    /**
+     * Backward-compatible alias for typo method name.
+     */
+    public function manejemenuser()
+    {
+        return $this->manajemenUser();
     }
 
     public function NotificationForm()
